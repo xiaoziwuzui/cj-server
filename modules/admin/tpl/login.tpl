@@ -7,7 +7,7 @@
 <body class="gray-bg">
 <div class="middle-box text-center loginscreen animated fadeInDown">
     <div>
-        <div><h1 class="logo-name" style="font-size: 70px;letter-spacing:0;">高铁新城</h1></div>
+        <div><h1 class="logo-name" style="font-size: 70px;letter-spacing:0;">抽奖管理系统</h1></div>
         <h3>管理后台登录</h3>
         <form class="m-t" role="form" action="/auth/login" method="POST" id="loginForm">
             <div class="form-group">

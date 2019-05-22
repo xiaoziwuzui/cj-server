@@ -45,7 +45,7 @@
                             <li><a href="/auth/logout">安全退出</a></li>
                         </ul>
                     </div>
-                    <div class="logo-element">高</div>
+                    <div class="logo-element">抽</div>
                 </li>
                 {foreach from=$menu key=key item=item}
                     {if isset($item.menu)}
