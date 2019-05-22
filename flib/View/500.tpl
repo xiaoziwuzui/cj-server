@@ -4,7 +4,7 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <title>500 - Internal Server Error</title>
     <style type="text/css">
-        #error_page {color: #999999; font: 14px/20px Arial, Helvetica, sans-serif; }
+        #error_page { color: #999999; font: 14px/20px Arial, Helvetica, sans-serif; }
         .error_h1 { font-size: 80px;  font-weight: bold;  margin: 0;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.7); line-height: 80px;}
         .error_h1 > span {  display: inline-block;  position: relative;  }
         .error_h1 > span:before {  content: "";  position: absolute;  top: 70%;  left: -30px;  right: -30px;  height: 80px;  background-size: 100% 100%;  }

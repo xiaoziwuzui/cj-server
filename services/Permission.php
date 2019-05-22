@@ -9,7 +9,7 @@
  */
 class Service_Permission
 {
-    public static $cache_fix = 'statics_v1_';
+    public static $cache_fix = 'cj_v1_';
 
     public static $unsetid = array();
 
