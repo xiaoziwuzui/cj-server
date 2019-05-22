@@ -20,8 +20,8 @@ $_config['global'] = array(
         'status'             => 'on',
         'default'            => 'member',
         'sub_domain_rewrite' => array(
-            '*'    => 'api',  //接口模块
-            'gtgm' => 'admin', //管理员后台
+            '*'   => 'api',  //接口模块
+            'cjm' => 'admin', //管理员后台
         ),
     ),
     'access_domain' => array(

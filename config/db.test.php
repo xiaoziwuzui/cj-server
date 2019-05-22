@@ -1,20 +1,21 @@
 <?php
-
 $_config ['db'] = array(
     'table_pre' => '',
-    'charset' => 'utf8',
-    'server' => array(
+    'charset'   => 'utf8mb4',
+    'server'    => array(
         'default' => array(
-            'dsn' => 'mysql:dbname=ffsm;host=127.0.0.1',
-            'user' => 'root',
+            'dsn'      => 'mysql:dbname=cj;host=127.0.0.1',
+            'user'     => 'root',
             'password' => 'root',
+            'charset' => 'utf8mb4'
         ),
     ),
     'server_read' => array(
-        'read_1' => array(
-            'dsn' => 'mysql:dbname=ffsm;host=127.0.0.1',
-            'user' => 'root',
+        'read_1'  => array(
+            'dsn'      => 'mysql:dbname=cj;host=127.0.0.1',
+            'user'     => 'root',
             'password' => 'root',
+            'charset' => 'utf8mb4'
         ),
     ),
     'server_others' => array(

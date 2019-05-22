@@ -7,11 +7,26 @@
  */
 class Service_Member{
 
+    public static $token_fix = 't_';
+
     public static $cache_fix = 'member_v1_';
 
+    public static $save = array(
+        'type' => 'redis',
+        'db'   => 2,
+        'conf' => 'redis_auth',
+    );
+
     /**
-     * 获取会员信息
-     * @param int $uid 指定的账号ID
+     * @var null|FRedis
+     */
+    public static $redis = null;
+
+    public static $key   = 'auth_';
+
+    /**
+     * 获取用户缓存信息
+     * @param int $uid 指定的UID
      * @param bool $update
      * @return array
      */
@@ -34,84 +49,15 @@ class Service_Member{
         return $result;
     }
 
+    /**
+     * 更新用户缓存
+     * @param int $uid
+     * @return array
+     * @author 93307399@qq.com
+     */
     public static function clearInfoById($uid=0){
         return self::getInfoById($uid,true);
     }
-
-    /**
-     * 获取当前用户的信息和状态
-     * @throws Exception
-     * @return array|bool
-     */
-    public static function getSessionData()
-    {
-        global $_F;
-        $auth_str = FCookie::get(FConfig::get('global.member_cookie_name'));
-        list($uid, $auth) = explode("\t", $auth_str);
-        if (!$auth) {
-            return false;
-        }
-        $check_auth = null;
-        $memberData = self::getInfoById($uid);
-        if ($memberData) {
-            $check_auth = md5("{$memberData['username']}|{$memberData['password']}|{$memberData['media_id']}");
-        }
-        if ($check_auth == $auth) {
-            $_F['member'] = self::getInfoById($uid);
-            $_F['uid']    = $uid;
-            $_F['gid']    = $memberData['group_id'];
-            return $memberData;
-        }
-
-        FCookie::set(FConfig::get('global.member_cookie_name'), '', -1,$_F['http_host']);
-        return false;
-    }
-
-    /**
-     * 移除当前账号的认证cookie
-     */
-    public static function removeSession()
-    {
-        global $_F;
-        FCookie::set(FConfig::get('global.member_cookie_name'), '', -1,$_F['http_host']);
-    }
-
-    /**
-     * 检测是否有权限访问一个地址
-     * @param string $url 要访问的方法，为空时自动获取当前的方法
-     * @param int $gid
-     * @return bool
-     */
-    public static function checkRole($url = '',$gid=0){
-        global $_F;
-        $controller = str_replace('controller_' . $_F['module'] . '_', '', strtolower($_F['controller']));
-        if ($gid == 0) {
-            $gid = $_F['member']['account_type'];
-        }
-        if($controller !== 'member' && $controller !== 'material'){
-            return true;
-        }
-        $memberPermission = FConfig::get('member_permission');
-        $permission = $memberPermission[$gid];
-        /**
-         * 格式化配置的权限.
-         */
-        $formatP = array();
-        foreach ($permission as $k=>$v){
-            $formatP[strtolower($k)] = $v;
-        }
-        if ($url == '') {
-            $url = '/' . $controller . '/' . $_F['action'];
-        }
-        $url = strtolower($url);
-        if (isset($formatP[$url])) {
-            unset($formatP);
-            return true;
-        }
-        unset($formatP);
-        return false;
-    }
-
 
     /**
      * 保存openid和对应的UID到redis
@@ -327,14 +273,14 @@ class Service_Member{
     }
 
     /**
-     * 验证手机号码是否存在
+     * 验证手机号码是否使用
      * @param $mobile
      * @return bool|null
      * @throws Exception
      * @author 93307399@qq.com
      */
     public static function verifyMobile($mobile){
-        $cache_key = 'mbp3_'.$mobile;
+        $cache_key = 'mb_'.$mobile;
         $cache_info = FCache::get($cache_key);
         if($cache_info){
             return $cache_info;
@@ -346,92 +292,6 @@ class Service_Member{
             return $info['uid'];
         }
         return true;
-    }
-
-    /**
-     * 发送验证码
-     * @param string $mobile
-     * @param string $key
-     * @author 93307399@qq.com
-     * @return bool|int
-     */
-    public static function sendVerifySms($mobile,$key='register_code'){
-        session_start();
-        srand((double)microtime() * 1000000);
-        $code = rand(1000, 9999);
-        $_SESSION[$key] = $code;
-        $data = array(
-            'TemplateCode' => 'SMS_165414696',
-            'SignName' => '高铁新城',
-            'mobile'   => $mobile,
-            'template' => json_encode(array('code'=>$code)),
-            'id'       => 1,
-        );
-        $result = self::sendSms($mobile,$data);
-        if($result == 'success'){
-            return $code;
-        }else{
-            return false;
-        }
-    }
-
-    /**
-     * 向指定手机发送一条短信
-     * @param string $mobile 手机号码
-     * @param string|array $message 短信内容
-     * @author 93307399@qq.com
-     * @return string
-     */
-    public static function sendSms($mobile,$message){
-        global $_F;
-        require_once APP_ROOT .'lib/sms/Sms.php';
-        $status = 'Faild';
-        if(!$_F['dev_mode']){
-            //调用阿里云短信接口
-            $config  = FConfig::get('sms.aliyun');
-            $s = new Sms($config);
-            $a = $s->getAdapter('aliyun');
-            $result = $a->sendSms($message);
-            if($result){
-                $status = 'success';
-            }
-        }else{
-            $status = 'success';
-        }
-        $status = strtolower($status);
-        $table = new FTable('sms');
-        $table->insert(array(
-            'mobile'      => $mobile,
-            'msg'         => json_encode($message),
-            'create_time' => time(),
-            'code'        => $status
-        ));
-        return $status;
-    }
-
-    /**
-     * 获取用户当前有效的卡券数
-     * @param int $uid
-     * @param bool $update
-     * @return array|null
-     * @throws Exception
-     * @author 93307399@qq.com
-     */
-    public static function getReceiveCardNumber($uid = 0,$update = false){
-        $cache_key = self::$cache_fix . '_card_n_' . $uid;
-        $result = FCache::get($cache_key);
-        if (!$result || $update === true) {
-            $Table  = new FTable('card_log','l');
-            $where  = array(
-                'l.uid'=>$uid,'l.status'=>1,'c.status'=>1,'c.expire_time'=>array('gt'=>time())
-            );
-            $data = $Table->fields('count(l.id) as total')->leftJoin('card','c','l.card_id=c.id')->where($where)->find();
-            $result = $data['total'];
-            FCache::set($cache_key,$result,600);
-            unset($table,$data);
-        }
-        unset($cache_key);
-        return $result;
     }
 
     /**
@@ -459,66 +319,23 @@ class Service_Member{
         FLogger::write($msg,'wx_notice');
         $host_name   = 'http://'.FConfig::get('global.share_domain').'/';
         /**
-         * 停车信息提醒
-         * KnGH3-_QFyHb5QeGTRoxdENQYOCaqt05AFU9jIh1rl8
-         * {{first.DATA}}
-        停车场：{{keyword1.DATA}}
-        入场时间：{{keyword2.DATA}}
-        入场收费员：{{keyword3.DATA}}
-        泊位编号：{{keyword4.DATA}}
-        预收金额：{{keyword5.DATA}}
-        {{remark.DATA}}
-         */
-        /**
-         * 开票成功通知
-         * WhLs9gC0xdtOghfQObB1EpqGujQdIbb5TrQpWvtX_lY
-         * {{first.DATA}}
-        发票代码：{{keyword1.DATA}}
-        发票号码：{{keyword2.DATA}}
-        开票日期：{{keyword3.DATA}}
-        发票金额：{{keyword4.DATA}}
-        {{remark.DATA}}
+         * 测试(抽奖成功通知)
+         * lLbESu1d8emXHuQdTYzUSeh-jgN-lMup5WKkN8yQLZE
+         * {{first.DATA}} 奖品：{{keyword1.DATA}} 抽奖时间：{{keyword2.DATA}} {{remark.DATA}}
          */
         $msgType   = array(
             'push_fee'   => array(
-                'template_id' => 'KnGH3-_QFyHb5QeGTRoxdENQYOCaqt05AFU9jIh1rl8',
+                'template_id' => 'lLbESu1d8emXHuQdTYzUSeh-jgN-lMup5WKkN8yQLZE',
                 'data'        => array(
                     'first'    => array(
-                        'tpl' => '尊敬的 plate 车主',
+                        'tpl' => '尊敬的用户',
                         'color' => '#173177',
                     ),
                     'keyword1' => array(
-                        'value' => '高铁新城东广场',
+                        'value' => 'title',
                         'color' => '#173177',
                     ),
-                    'keyword2' => 'income_time',
-                    'keyword3' => '无',
-                    'keyword4' => '无',
-                    'keyword5' => array(
-                        'tpl' => 'money元',
-                        'color' => '#173177',
-                    ),
-                    'remark'   => array(
-                        'tpl' => 'remark',
-                        'color' => '#173177',
-                    ),
-                ),
-                //'url' => 'member/success',
-            ),
-            'ticket_success'   => array(
-                'template_id' => 'WhLs9gC0xdtOghfQObB1EpqGujQdIbb5TrQpWvtX_lY',
-                'data'        => array(
-                    'first'    => array(
-                        'tpl' => '尊敬的用户，您的电子发票已生成',
-                        'color' => '#173177',
-                    ),
-                    'keyword1' => 'fpcode',
-                    'keyword2' => 'fphm',
-                    'keyword3' => 'ticket_date',
-                    'keyword4' => array(
-                        'tpl' => 'money元',
-                        'color' => '#173177',
-                    ),
+                    'keyword2' => 'create_time',
                     'remark'   => array(
                         'tpl' => 'remark',
                         'color' => '#173177',
@@ -584,6 +401,246 @@ class Service_Member{
         return false;
     }
 
+    /**
+     * 验证一个令牌
+     * @param $token
+     * @param $ip
+     * @author 93307399@qq.com
+     * @return int
+     */
+    public static function AuthToken($token,$ip){
+        if(strlen($token) !== 32){
+            //格式错误
+            return -1;
+        }
+        $tokenInfo = self::getTokenByCache($token);
+        if(!$tokenInfo){
+            $table     = new FTable('user_token');
+            $tokenInfo = false;
+            try{
+                $tokenInfo = $table->fields('uid,expire_time,ip,token')->where(array('token'=>$token))->find();
+            }catch (Exception $exception){}
+            unset($table);
+            if(!$tokenInfo){
+                //无效令牌
+                return -2;
+            }
+        }
+        if($tokenInfo['expire_time'] < time()){
+            //过期令牌
+            return -3;
+        }
+        $cacheTime = 3600;
+        $cacheInfo = array(
+            'uid'         => $tokenInfo['uid'],
+            'expire_time' => $tokenInfo['expire_time'],
+            'ip'          => $tokenInfo['ip'],
+        );
+        if(self::AuthNetAddress($ip,$tokenInfo['ip']) && $cacheInfo['expire_time'] > time()){
+            $cacheInfo['expire_time'] += (86400 * 3);
+            $cacheTime = 86400;
+        }
+        self::setTokenByCache($token,$cacheInfo,$cacheTime);
+        return $tokenInfo['uid'];
+    }
 
+    /**
+     * 验证两个IP是否在同一城市
+     * 暂时通过子网的形式来判断.也许会有问题
+     * @param $ip
+     * @param $new_ip
+     * @author 93307399@qq.com
+     * @return bool
+     */
+    public static function AuthNetAddress($ip,$new_ip){
+        if($ip === $new_ip){
+            return true;
+        }
+        $ipInfo    = explode('.',$ip);
+        $newIpInfo = explode('.',$new_ip);
+        if($ipInfo[0] . '.' . $ipInfo[1] === $newIpInfo[0] . '.' . $newIpInfo[1]){
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * 为用户生成令牌
+     * @param array $userInfo
+     * @param string $ip
+     * @author 93307399@qq.com
+     * @return string
+     */
+    public static function GenerateToken($userInfo,$ip){
+        $token = '';
+        if(!$userInfo){
+            return $token;
+        }
+        $token = md5(implode('|',array(
+            $userInfo['uid'],
+            $userInfo['status'],
+            $userInfo['openid'],
+            FConfig::get('global.token_key'),
+        )));
+        $table = new FTable('user_token');
+        $find  = false;
+        try{
+            $find = $table->fields('uid')->where(array('uid'=>$userInfo['uid']))->find();
+        }catch (Exception $exception){
+            FLogger::write($exception,'exception');
+        }
+        if(!$find){
+            try{
+                $table->save(array(
+                    'uid'         => $userInfo['uid'],
+                    'token'       => $token,
+                    'create_time' => time(),
+                    'expire_time' => time() + (86400 * 3),
+                    'ip'          => $ip,
+                ));
+            }catch (Exception $exception){
+                FLogger::write($exception,'exception');
+            }
+        }else{
+            try{
+                $table->where(array('uid'=>$userInfo['uid']))->update(array(
+                    'token'       => $token,
+                    'create_time' => time(),
+                    'expire_time' => time() + (86400 * 3),
+                    'ip'          => $ip,
+                ));
+            }catch (Exception $exception){
+                FLogger::write($exception,'exception');
+            }
+        }
+        self::setTokenByCache($token,array(
+            'uid'         => $userInfo['uid'],
+            'create_time' => time(),
+            'expire_time' => time() + (86400 * 3),
+            'ip'          => $ip,
+        ),3600);
+        unset($table,$find,$userInfo);
+        return $token;
+    }
+
+    /**
+     * 销毁用户认证令牌
+     * @param string $token
+     * @author 93307399@qq.com
+     * @return bool
+     */
+    public static function DestroyToken($token){
+        if(strlen($token) !== 32){
+            return false;
+        }
+        $uid = self::getTokenByCache($token);
+        if(!$uid){
+            $table = new FTable('manager_token');
+            $find = false;
+            try{
+                $find = $table->fields('uid')->where(array('token'=>$token))->find();
+            }catch (Exception $exception){
+                FLogger::write($exception,'exception');
+            }
+            if(!$find){
+                unset($find,$table);
+                return false;
+            }
+            $userInfo = self::getInfoById($find['uid']);
+        }else{
+            $userInfo = self::getInfoById($uid);
+            self::delTokenByCache($token);
+        }
+        if(!$userInfo){
+            return false;
+        }
+        //随机生成一项加密值,使令牌失效
+        $userInfo['openid'] = md5(time());
+        self::GenerateToken($userInfo,'127.0.0.1');
+        return true;
+    }
+
+    public static function getRedis(){
+        global $_F;
+        if(self::$redis === null){
+            if($_F['dev_mode']){
+                self::$save = array(
+                    'type' => 'redis',
+                    'db'   => 4,
+                    'conf' => 'redis_auth',
+                );
+            }
+            self::$redis = new FRedis(self::$save['db'],self::$save['conf']);
+        }
+        return self::$redis;
+    }
+
+    /**
+     * 从缓存|Redis获取令牌信息
+     * @param $token
+     * @return array|bool|string
+     * @author 93307399@qq.com
+     */
+    public static function getTokenByCache($token){
+        global $_F;
+        try{
+            if($_F['dev_mode']){
+                $result = FCache::get(self::$token_fix . $token);
+            }else{
+                $redis = self::getRedis();
+                $result = $redis->get(self::$token_fix . $token);
+            }
+            return $result;
+        }catch (Exception $e){
+            FLogger::write($e,'exception');
+        }
+        return false;
+    }
+
+    /**
+     * 设置令牌信息到缓存|Redis
+     * @param string $token
+     * @param array $data
+     * @param int $expire
+     * @return bool
+     * @author 93307399@qq.com
+     */
+    public static function setTokenByCache($token,$data,$expire){
+        global $_F;
+        try{
+            if($_F['dev_mode']){
+                FCache::set(self::$token_fix . $token,$data,$expire);
+                $result = true;
+            }else{
+                $redis  = self::getRedis();
+                $result = $redis->set(self::$token_fix . $token,$data,0,0,$expire);
+            }
+            return $result;
+        }catch (Exception $e){
+            FLogger::write($e,'exception');
+        }
+        return false;
+    }
+
+    /**
+     * 从缓存|Redis删除令牌
+     * @param $token
+     * @return bool
+     * @author 93307399@qq.com
+     */
+    public static function delTokenByCache($token){
+        global $_F;
+        try{
+            if($_F['dev_mode']){
+                FCache::delete(self::$token_fix . $token);
+                return true;
+            }else{
+                $redis = self::getRedis();
+                return $redis->delete(self::$token_fix . $token);
+            }
+        }catch (Exception $e){
+            FLogger::write($e,'exception');
+        }
+        return false;
+    }
 }

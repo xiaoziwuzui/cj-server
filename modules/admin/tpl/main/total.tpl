@@ -22,21 +22,21 @@
                     <tr class="text-center">
                         <td>
                             <div class="col-sm-12 p-l-none">
-                                <label>车辆数</label>
+                                <label>用户数</label>
                                 <div class="hr-line-dashed"></div>
                                 <div class="text-danger">{intval($total.plate)}</div>
                             </div>
                         </td>
                         <td>
                             <div class="col-sm-12 p-l-none">
-                                <label>总订单数</label>
+                                <label>总抽奖数</label>
                                 <div class="hr-line-dashed"></div>
                                 <div class="text-warning">{intval($total.pay_order)}</div>
                             </div>
                         </td>
                         <td>
                             <div class="col-sm-12 p-l-none">
-                                <label>总付款金额</label>
+                                <label>总抽奖金额</label>
                                 <div class="hr-line-dashed"></div>
                                 <div class="text-danger">¥ {floatval(Service_Public::formatMoney($total.pay_money))}</div>
                             </div>
@@ -67,60 +67,6 @@
                     </tr></tbody></table>
 
             </div>
-            <div class="ibox-title">
-                <h5>当日数据概况</h5>
-            </div>
-            <div class="ibox-content clearfix" style="margin-bottom: 20px;">
-                <table class="table table-striped table-bordered table-hover optimize_table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">付款数</th>
-                            <th class="text-center">凌晨订单</th>
-                            <th class="text-center">凌晨金额</th>
-                            <th class="text-center">白天订单</th>
-                            <th class="text-center">白天金额</th>
-                            <th class="text-center">总金额</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="text-center">
-                            <td>{intval($day.success_order)}</td>
-                            <td>{intval($day.am_total)}</td>
-                            <td>{floatval(Service_Public::formatMoney($day.am_money))}</td>
-                            <td>{intval($day.pm_total)}</td>
-                            <td>{floatval(Service_Public::formatMoney($day.pm_money))}</td>
-                            <td>{floatval(Service_Public::formatMoney($day.total_money))}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="ibox-title">
-                <h5>当月数据概况</h5>
-            </div>
-            <div class="ibox-content clearfix" style="margin-bottom: 20px;">
-                <table class="table table-striped table-bordered table-hover optimize_table">
-                    <thead>
-                    <tr>
-                        <th class="text-center">付款数</th>
-                        <th class="text-center">凌晨订单</th>
-                        <th class="text-center">凌晨金额</th>
-                        <th class="text-center">白天订单</th>
-                        <th class="text-center">白天金额</th>
-                        <th class="text-center">总金额</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="text-center">
-                        <td>{intval($month.success_order)}</td>
-                        <td>{intval($month.am_total)}</td>
-                        <td>{floatval(Service_Public::formatMoney($month.am_money))}</td>
-                        <td>{intval($month.pm_total)}</td>
-                        <td>{floatval(Service_Public::formatMoney($month.pm_money))}</td>
-                        <td>{floatval(Service_Public::formatMoney($month.total_money))}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 </div>
@@ -135,24 +81,14 @@
                 range: true,
                 max:'{date('Y-m-d')}',
                 done:function (value, date, endDat) {
-                    _getData(value);
                 }
             });
             layui.laydate.render({
                 elem: '._dayTime',
                 max:'{date('Y-m-d')}',
                 done:function (value, date, endDat) {
-                    _getDayData(value);
                 }
             });
-            _getData();
-            _getDayData();
-        });
-        $('._getData').click(function () {
-            _getData();
-        });
-        $('._getDayData').click(function () {
-            _getDayData();
         });
     });
     function _getData(date) {

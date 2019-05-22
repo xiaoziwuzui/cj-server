@@ -2,7 +2,7 @@
 
 $_config ['db'] = array(
     'table_pre' => '',
-    'charset' => 'utf8',
+    'charset' => 'utf8mb4',
     'server' => array(
         'default' => array(
             'dsn' => 'mysql:dbname=cj_bchhm_com;host=127.0.0.1',
