@@ -6,7 +6,7 @@
  * Date: 2019/5/22
  * Time: 14:22
  */
-class Controller_Api_Main extends Controller_Admin_Abstract
+class Controller_Api_Main extends Controller_Api_Abstract
 {
 
     public function beforeAction()
@@ -16,6 +16,10 @@ class Controller_Api_Main extends Controller_Admin_Abstract
             //初始化一些东西
         }
         return $flag;
+    }
+
+    public function indexAction(){
+        $this->success('success');
     }
 
     /**
@@ -51,7 +55,9 @@ class Controller_Api_Main extends Controller_Admin_Abstract
         if(strlen($code) == 0){
             $this->error('code empty!');
         }
-
+        $w = new Service_Mini('cj');
+        $result = $w->codeToSession($code);
+        $this->output($result);
     }
 
 }

@@ -12,7 +12,7 @@ class SimpleCache{
     public static $pre = 'mini_';
 
 
-    public static function init(){
+    public static function init($dir){
 
     }
 

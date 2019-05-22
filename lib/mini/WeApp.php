@@ -22,11 +22,10 @@ class WeApp
 	private $secret;
 	private $instance;
 
-	public function __construct($appid,$secret,$token_cache_dir){
+	public function __construct($appid,$secret){
 		$this->appid = $appid;
 		$this->secret = $secret;
 		$this->instance = [];
-		SimpleCache::init($token_cache_dir);
 	}
 
 	/**

@@ -40,6 +40,8 @@ class Controller_Api_Abstract extends FController
         header("Access-Control-Allow-Headers: Content-Type");
         header("Content-Type: application/json");
         $this->param = json_decode(FRequest::getRawPostData(),true);
+        //强制所有的请求走ajax
+        $_F['in_ajax'] = true;
         if($_F['action'] != 'login'){
             $this->authToken();
         }
@@ -77,6 +79,6 @@ class Controller_Api_Abstract extends FController
     }
 
     public function showMessage($message, $messageType = 'success', $jumpUrl = null) {
-        $this->error($message);
+        echo $message;
     }
 }
