@@ -381,6 +381,7 @@ class Service_Member{
                 return -2;
             }
         }
+//        FLogger::write();
         if($tokenInfo['expire_time'] < time()){
             //过期令牌
             return -3;
@@ -547,6 +548,9 @@ class Service_Member{
             }else{
                 $redis = self::getRedis();
                 $result = $redis->get(self::$token_fix . $token);
+                if($result){
+                    $result = json_decode($result,true);
+                }
             }
             return $result;
         }catch (Exception $e){
@@ -571,6 +575,7 @@ class Service_Member{
                 $result = true;
             }else{
                 $redis  = self::getRedis();
+                $data   = json_encode($data);
                 $result = $redis->set(self::$token_fix . $token,$data,0,0,$expire);
             }
             return $result;
