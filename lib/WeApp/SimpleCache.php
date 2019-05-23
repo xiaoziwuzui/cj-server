@@ -5,7 +5,7 @@
  * @author: 93307399@qq.com
  */
 
-namespace JiaweiXS;
+namespace lib\WeApp;
 
 class SimpleCache{
 

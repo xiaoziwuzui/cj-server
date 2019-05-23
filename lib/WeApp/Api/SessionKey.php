@@ -6,8 +6,7 @@
  * Time: 11:16
  */
 
-namespace JiaweiXS\WeApp\Api;
-
+namespace lib\WeApp\Api;
 
 class SessionKey extends BaseApi
 {

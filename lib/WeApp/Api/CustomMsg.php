@@ -6,7 +6,7 @@
  * Time: 21:18
  */
 
-namespace JiaweiXS\WeApp\Api;
+namespace lib\WeApp\Api;
 
 
 class CustomMsg extends BaseApi

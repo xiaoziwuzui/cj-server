@@ -6,7 +6,7 @@
  * Time: 19:06
  */
 
-namespace JiaweiXS\WeApp\Api;
+namespace lib\WeApp\Api;
 
 
 class QRCode extends BaseApi

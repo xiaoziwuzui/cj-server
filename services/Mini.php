@@ -7,11 +7,9 @@
  * @time 2018/5/12
  * @version 0.1
  */
-use JiaweiXS\WeApp\WeApp;
 
 class Service_Mini
 {
-
     private $config = array();
 
     public $weApp = null;
@@ -31,19 +29,20 @@ class Service_Mini
                 return false;
             }
         }
-        require_once APP_ROOT.'/lib/Request.php';
-        $this->weApp = new WeApp($this->config['app_id'],$this->config['app_secret']);
+        require_once APP_ROOT.'/lib/WeApp/WeApp.php';
+        $this->weApp = new lib\WeApp\WeApp($this->config['app_id'],$this->config['app_secret']);
         return true;
     }
 
     /**
+     * 通过登录code换取用户openid
      * @param $code
-     * @return array
+     * @return array|bool
      * @author 93307399@qq.com
      */
     public function codeToSession($code){
         $result = $this->weApp->getSessionKey($code);
-        return $result;
+        return json_decode($result,true);
     }
 
 

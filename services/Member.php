@@ -61,32 +61,42 @@ class Service_Member{
 
     /**
      * 保存openid和对应的UID到redis
-     * @param string $openid_key 微信openid
+     * @param string $openid 微信openid
      * @param int $uid 用户UID
      * @param int $time 缓存时间
      * @return bool
      */
-    public static function setOpenid($openid_key, $uid, $time = 2592000)
+    public static function setOpenid($openid, $uid, $time = 3600)
     {
-        FCache::set($openid_key, $uid, $time);
+        $key = 'openid_' . substr(md5($openid . FConfig::get('global.encrypt_key')),0,16);
+        FCache::set($key, $uid, $time);
         return true;
     }
 
     /**
      * 根据微信openid 取对应的uid
-     * @throws Exception
-     * @param string $openid_key
+     * @param string $openid 微信openid
+     * @param bool $update 是否主动更新
      * @return int
      */
-    public static function getOpenid($openid_key)
+    public static function getOpenid($openid,$update = false)
     {
-        $table = new FTable('member');
-        $info = $table->fields('uid')->where(array('openid' => $openid_key))->find();
-        if ($info) {
-            return $info['uid'];
-        } else {
-            return false;
+        $key  = 'openid_' . substr(md5($openid . FConfig::get('global.encrypt_key')),0,16);
+        $info = FCache::get($key);
+        if(!$info || $update !== false){
+            $table = new FTable('member');
+            $info  = false;
+            try{
+                $info = $table->fields('uid')->where(array('openid' => $openid))->find();
+            }catch (Exception $exception){
+                FLogger::write($exception,'exception');
+            }
+            if($info){
+                $info = $info['uid'];
+                FCache::set($key, $info, 3600);
+            }
         }
+        return $info;
     }
 
     /**

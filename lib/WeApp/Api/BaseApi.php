@@ -6,10 +6,10 @@
  * Time: 17:39
  */
 
-namespace JiaweiXS\WeApp\Api;
+namespace lib\WeApp\Api;
 
 use FLogger;
-use JiaweiXS\SimpleCache;
+use lib\WeApp\SimpleCache;
 
 class BaseApi
 {

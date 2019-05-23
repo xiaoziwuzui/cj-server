@@ -5,7 +5,7 @@
  * Time: 10:06
  */
 
-namespace JiaweiXS\WeApp\Api;
+namespace lib\WeApp\Api;
 
 class ApiUrl{
 

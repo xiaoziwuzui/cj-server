@@ -6,15 +6,14 @@
  * Time: 10:04
  */
 
-namespace JiaweiXS\WeApp;
+namespace lib\WeApp;
 
-
-use JiaweiXS\WeApp\Api\CustomMsg;
-use JiaweiXS\WeApp\Api\QRCode;
-use JiaweiXS\WeApp\Api\SessionKey;
-use JiaweiXS\WeApp\Api\Statistic;
-use JiaweiXS\WeApp\Api\TemplateMsg;
-use JiaweiXS\SimpleCache;
+use lib\WeApp\Api\CustomMsg;
+use lib\WeApp\Api\QRCode;
+use lib\WeApp\Api\SessionKey;
+use lib\WeApp\Api\Statistic;
+use lib\WeApp\Api\TemplateMsg;
+use lib\SimpleCache;
 
 class WeApp
 {

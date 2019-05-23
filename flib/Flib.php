@@ -25,6 +25,7 @@ class Flib
         $className = ltrim($className, "\\");
         if (strpos($className, '\\')) {
             $filePpath = APP_ROOT . str_replace('\\', '/', $className) . '.php';
+            var_dump($filePpath);
             if (file_exists($filePpath)) {
                 return require_once $filePpath;
             }
