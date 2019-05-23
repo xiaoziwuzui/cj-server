@@ -73,14 +73,6 @@ class Controller_Api_Main extends Controller_Api_Abstract
     }
 
     /**
-     * 获取用户信息
-     * @author 93307399@qq.com
-     */
-    public function getUserInfoAction(){
-
-    }
-
-    /**
      * 用户登录获取令牌
      * @author 93307399@qq.com
      */
@@ -172,4 +164,58 @@ class Controller_Api_Main extends Controller_Api_Abstract
         $this->output($output);
     }
 
+    /**
+     * 更新用户资料
+     * 这个接口对前端应该是无感的 始终返回成功
+     * @author 93307399@qq.com
+     */
+    public function upUserInfoAction(){
+        $encryptedData = $this->param['encryptedData'];
+        $userInfo = $this->user;
+        $iv       = $this->param['iv'];
+        $w        = new Service_Mini('cj');
+        $result   = '';
+        $code     = $w->decryptData($userInfo['session_key'],$encryptedData,$iv,$result);
+        if($code === 0){
+           //更新数据库中的用户资料
+            $result = json_decode($result,true);
+            /**
+             * 与缓存数据比较,不一样的时候才更新
+             * 机制:md5(数据 + key)
+             */
+            $key = FConfig::get('global.encrypt_key');
+            if(md5(implode('',array(
+                $userInfo['nickname'],
+                $userInfo['avatar'],
+                $userInfo['sex'],
+                $userInfo['city'],
+                $userInfo['province'],
+                $key
+            ))) != md5(implode('',array(
+                    $result['nickName'],
+                    $result['avatarUrl'],
+                    $result['gender'],
+                    $result['city'],
+                    $result['province'],
+                    $key
+                )))){
+                $table  = new FTable('member','','default');
+                try{
+                    $table->where(array('uid'=>$userInfo['uid']))->update(array(
+                        'nickname' => $result['nickName'],
+                        'avatar'   => $result['avatarUrl'],
+                        'sex'      => $result['gender'],
+                        'city'     => $result['city'],
+                        'province' => $result['province'],
+                        'last_time' => time(),
+                    ));
+                    //前期可以直接查询更新缓存,以后要改成直接更新缓存
+                    Service_Member::clearInfoById($userInfo['uid']);
+                }catch (Exception $exception){
+                    FLogger::write($exception,'exception');
+                }
+            }
+        }
+        $this->output(200);
+    }
 }

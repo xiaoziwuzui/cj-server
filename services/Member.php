@@ -638,11 +638,11 @@ class Service_Member{
             if($item_value != ''){
                 $data[$key] = array(
                     'value' => $item_value,
-                    'color' => '#000000'
+//                    'color' => '#000000'
                 );
-                if(isset($value['color'])){
-                    $data[$key]['color'] = $value['color'];
-                }
+//                if(isset($value['color'])){
+//                    $data[$key]['color'] = $value['color'];
+//                }
             }
         }
         $result = array(

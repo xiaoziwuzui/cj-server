@@ -30,12 +30,18 @@ $_config['msg_template'] = array(
         ),
         //'url' => 'member/success',
     ),
+    /**
+     * 物品名称 {{keyword1.DATA}} 购买时间 {{keyword2.DATA}} 交易单号 {{keyword3.DATA}} 购买价格 {{keyword4.DATA}} 数量 {{keyword5.DATA}} 备注 {{keyword6.DATA}}
+     */
     'buy_success' => array(
-        'template_id' => 'QP7uwW_a00P5e8BqSnLiXz6UProQ5LKZGnNLJF8uvpo',
+        'template_id' => '5hQt5SPJdEU5OkdoBpyMfEWV2UDNrbyziZmxbCJGPiI',
         'data' => array(
             'keyword1' => 'title',
             'keyword2' => 'create_time',
-            'keyword3' => 'remark',
+            'keyword3' => 'order_no',
+            'keyword4' => 'price',
+            'keyword5' => 'number',
+            'keyword6' => 'remark',
         ),
         //'url' => 'member/success',
     ),
