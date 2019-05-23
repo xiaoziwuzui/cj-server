@@ -42,12 +42,13 @@ class Controller_Api_Main extends Controller_Api_Abstract
             'remark' => '充钱才是强大的根本要素',
         ));
         if($config){
-            $w->sendTemplateMsg(array(
+            $result = $w->sendTemplateMsg(array(
                 'openid' => $this->user['openid'],
                 'formId' => $formId,
                 'template_id' => $config['template_id'],
                 'message' => $config['msg']
             ));
+            FLogger::write($result,'miniTemplate');
         }
         $this->success('success');
     }
