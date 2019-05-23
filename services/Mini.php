@@ -77,9 +77,15 @@ class Service_Mini
 
     public function sendTemplateMsg($data){
         FLogger::write($data,'miniTemplate');
-
         $msg = $this->weApp->getTemplateMsg();
         $result = $msg->send($data['openid'],$data['template_id'],$data['formId'],$data['message']);
+        return $result;
+    }
+
+    public function sendTemplateUnionMsg($data){
+        FLogger::write($data,'miniTemplate');
+        $msg = $this->weApp->getTemplateMsg();
+        $result = $msg->sendUnion($data['openid'],$data['template_id'],$data['formId'],$data['message']);
         return $result;
     }
 

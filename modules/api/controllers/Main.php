@@ -53,7 +53,7 @@ class Controller_Api_Main extends Controller_Api_Abstract
 //            $list = $msg->getList(0,5);
 //            $this->output($list);
 
-            $result = $w->sendTemplateMsg(array(
+            $result = $w->sendTemplateUnionMsg(array(
                 'openid' => $this->user['openid'],
                 'formId' => $formId,
                 'template_id' => $config['template_id'],

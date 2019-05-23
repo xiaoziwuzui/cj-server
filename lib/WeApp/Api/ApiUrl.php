@@ -25,6 +25,9 @@ class ApiUrl{
 	//send template message
 	const TEMPLATE_MSG_SEND = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send';
 
+	//send template message
+	const TEMPLATE_MSG_UNI_SEND = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send';
+
 	//message in custom service
 	const CUSTOM_MSG_SEND = 'https://api.weixin.qq.com/cgi-bin/message/custom/send';
 

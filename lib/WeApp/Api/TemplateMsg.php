@@ -69,4 +69,21 @@ class TemplateMsg extends BaseApi
 		return $this->sendRequestWithToken($url,$param);
 	}
 
+
+	public function sendUnion($touser,$template_id,$form_id,$data,$page=null,$color=null,$emphasis_keyword=null){
+		$url = ApiUrl::TEMPLATE_MSG_UNI_SEND;
+		$param = array(
+			'touser'=>$touser,
+			'weapp_template_msg' => array(
+                'template_id'=>$template_id,
+                'page'=>$page,
+                'form_id'=>$form_id,
+                'data'=>$data,
+                'color'=>$color,
+                'emphasis_keyword'=>$emphasis_keyword,
+            ),
+		);
+		return $this->sendRequestWithToken($url,$param);
+	}
+
 }
