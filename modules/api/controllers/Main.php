@@ -27,7 +27,7 @@ class Controller_Api_Main extends Controller_Api_Abstract
      * @author 93307399@qq.com
      */
     public function UpFormIDAction(){
-        $formId = FRequest::getPostString('formId');
+        $formId = $this->param['formId'];
         if(!$formId){
             $this->error('formid empty!');
         }
@@ -36,12 +36,22 @@ class Controller_Api_Main extends Controller_Api_Abstract
          */
         $w = new Service_Mini('cj');
 
-        $config = Service_Member::formatTempateData('push_fee',array(
+        $config = Service_Member::formatTempateData('buy_success',array(
             'title' => '您中奖啦!!',
             'create_time' => date('Y-m-d H:i:s'),
             'remark' => '充钱才是强大的根本要素',
         ));
         if($config){
+//            $msg = $w->weApp->getTemplateMsg();
+////            $a = $msg->getListFromLib(0,10);
+//            //手动添加一个模板
+//            $d = $msg->getTempFromLib('AT0002');
+//            $msg->add('AT0002',array(
+//                5,4,13,
+//            ));
+//            $list = $msg->getList(0,5);
+//            $this->output($list);
+
             $result = $w->sendTemplateMsg(array(
                 'openid' => $this->user['openid'],
                 'formId' => $formId,
