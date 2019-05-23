@@ -31,6 +31,7 @@ class Controller_Api_Main extends Controller_Api_Abstract
         if(!$formId){
             $this->error('formid empty!');
         }
+        FLogger::write($formId,'miniTemplate');
         /**
          * 发起一条消息推送
          */
