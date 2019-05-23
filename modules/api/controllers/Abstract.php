@@ -41,6 +41,7 @@ class Controller_Api_Abstract extends FController
         header("Content-Type: application/json");
         $this->param = json_decode(FRequest::getRawPostData(),true);
         //强制所有的请求走ajax
+        FLogger::$disableRefer = true;
         $_F['in_ajax'] = true;
         if($_F['action'] != 'login'){
             $this->authToken();
