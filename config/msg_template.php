@@ -30,19 +30,12 @@ $_config['msg_template'] = array(
         ),
         //'url' => 'member/success',
     ),
-    'buy_success'   => array(
+    'buy_success' => array(
         'template_id' => 'QP7uwW_a00P5e8BqSnLiXz6UProQ5LKZGnNLJF8uvpo',
-        'data'        => array(
-            'keyword1' => array(
-                'value' => 'title',
-                'color' => '#173177',
-            ),
+        'data' => array(
+            'keyword1' => 'title',
             'keyword2' => 'create_time',
             'keyword3' => 'remark',
-            'remark'   => array(
-                'tpl' => 'remark',
-                'color' => '#173177',
-            ),
         ),
         //'url' => 'member/success',
     ),
