@@ -14,6 +14,9 @@ class Service_Mini
 
     public $weApp = null;
 
+    public $errCode = null;
+    public $errMsg = null;
+
     public function __construct($config = null)
     {
         if($config === null || $config === false){
@@ -35,14 +38,42 @@ class Service_Mini
     }
 
     /**
+     * 获取产生的错误信息
+     * @return array
+     * @author 93307399@qq.com
+     */
+    public function getErrInfo(){
+        return array(
+            'errCode' => $this->errCode,
+            'errMsg'  => $this->errMsg,
+        );
+    }
+
+    /**
+     * 清除产生的错误信息
+     * @author 93307399@qq.com
+     */
+    public function clearErrInfo(){
+        $this->errCode = null;
+        $this->errMsg = null;
+    }
+
+    /**
      * 通过登录code换取用户openid
      * @param $code
      * @return array|bool
      * @author 93307399@qq.com
      */
     public function codeToSession($code){
-        $result = $this->weApp->getSessionKey($code);
-        return json_decode($result,true);
+        $this->clearErrInfo();
+        $json = $this->weApp->getSessionKey($code);
+        $json = json_decode($json,true);
+        if (!$json || isset($json['errcode'])) {
+            $this->errCode = $json['errcode'];
+            $this->errMsg = $json['errmsg'];
+            return false;
+        }
+        return $json;
     }
 
 
