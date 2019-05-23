@@ -18,6 +18,6 @@ class SessionKey extends BaseApi
 			'js_code'=>$code,
 			'grant_type'=>'authorization_code',
 		);
-		return $this->sendHttpRequest($url,$param);
+		return $this->sendHttpRequest($url,$param,null,false);
 	}
 }

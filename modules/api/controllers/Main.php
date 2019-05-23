@@ -27,7 +27,29 @@ class Controller_Api_Main extends Controller_Api_Abstract
      * @author 93307399@qq.com
      */
     public function UpFormIDAction(){
+        $formId = FRequest::getPostString('formId');
+        if(!$formId){
+            $this->error('formid empty!');
+        }
+        /**
+         * 发起一条消息推送
+         */
+        $w = new Service_Mini('cj');
 
+        $config = Service_Member::formatTempateData('push_fee',array(
+            'title' => '您中奖啦!!',
+            'create_time' => date('Y-m-d H:i:s'),
+            'remark' => '充钱才是强大的根本要素',
+        ));
+        if($config){
+            $w->sendTemplateMsg(array(
+                'openid' => $this->user['openid'],
+                'formId' => $formId,
+                'template_id' => $config['template_id'],
+                'message' => $config['msg']
+            ));
+        }
+        $this->success('success');
     }
 
     /**
@@ -57,6 +79,7 @@ class Controller_Api_Main extends Controller_Api_Abstract
         }
         $w = new Service_Mini('cj');
         $result = $w->codeToSession($code);
+        FLogger::write($result);
         if($result){
             /**
              * 处理用户注册账号操作

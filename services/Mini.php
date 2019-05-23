@@ -67,13 +67,18 @@ class Service_Mini
     public function codeToSession($code){
         $this->clearErrInfo();
         $json = $this->weApp->getSessionKey($code);
-        $json = json_decode($json,true);
         if (!$json || isset($json['errcode'])) {
             $this->errCode = $json['errcode'];
             $this->errMsg = $json['errmsg'];
             return false;
         }
         return $json;
+    }
+
+    public function sendTemplateMsg($data){
+        $msg = $this->weApp->getTemplateMsg();
+        $result = $msg->send($data['openid'],$data['template_id'],$data['formId'],$data['message']);
+        return $result;
     }
 
 
