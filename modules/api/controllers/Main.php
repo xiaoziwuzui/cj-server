@@ -38,9 +38,12 @@ class Controller_Api_Main extends Controller_Api_Abstract
         $w = new Service_Mini('cj');
 
         $config = Service_Member::formatTempateData('buy_success',array(
-            'title' => '您中奖啦!!',
+            'title'       => '超级游戏礼包到账啦!!',
             'create_time' => date('Y-m-d H:i:s'),
-            'remark' => '充钱才是强大的根本要素',
+            'order_no'    => date('Ymd') . FMisc::str2crc32(md5(date('H:i:s'))),
+            'price'       => '6 元',
+            'number'      => '超值档*1',
+            'remark'      => '充钱才是强大的根本要素',
         ));
         if($config){
 //            $msg = $w->weApp->getTemplateMsg();
@@ -54,10 +57,10 @@ class Controller_Api_Main extends Controller_Api_Abstract
 //            $this->output($list);
 
             $result = $w->sendTemplateUnionMsg(array(
-                'openid' => $this->user['openid'],
-                'formId' => $formId,
+                'openid'      => $this->user['openid'],
+                'formId'      => $formId,
                 'template_id' => $config['template_id'],
-                'message' => $config['msg']
+                'message'     => $config['msg']
             ));
             FLogger::write($result,'miniTemplate');
         }
