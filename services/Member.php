@@ -418,10 +418,13 @@ class Service_Member{
      * @author 93307399@qq.com
      * @return int
      */
-    public static function AuthToken($token,$ip){
+    public static function AuthToken($token,$ip = null){
         if(strlen($token) !== 32){
             //格式错误
             return -1;
+        }
+        if($ip === null){
+            $ip = FRequest::getClientIP();
         }
         $tokenInfo = self::getTokenByCache($token);
         if(!$tokenInfo){
@@ -481,10 +484,13 @@ class Service_Member{
      * @author 93307399@qq.com
      * @return string
      */
-    public static function GenerateToken($userInfo,$ip){
+    public static function GenerateToken($userInfo,$ip = null){
         $token = '';
         if(!$userInfo){
             return $token;
+        }
+        if($ip === null){
+            $ip = FRequest::getClientIP();
         }
         $token = md5(implode('|',array(
             $userInfo['uid'],

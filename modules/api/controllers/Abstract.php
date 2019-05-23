@@ -65,14 +65,14 @@ class Controller_Api_Abstract extends FController
         if($token == '' && isset($_GET['token'])){
             $token = $_GET['token'];
         }
-        $result = Service_Manager::AuthToken($token,$ip);
+        $result = Service_Member::AuthToken($token,$ip);
         if($result < 0){
             $msg = array(
-                -1 => '请先登录',
+                -1 => '用户认证无效',
                 -2 => '用户认证失败',
                 -3 => '用户状态过期',
             );
-            $this->output(301,$msg[$result]);
+            $this->output(300,$msg[$result]);
         }
         $this->user = Service_Member::getInfoById($result);
         $_F['uid']  = $this->user['uid'];
