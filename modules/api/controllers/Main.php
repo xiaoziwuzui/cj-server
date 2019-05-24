@@ -18,7 +18,22 @@ class Controller_Api_Main extends Controller_Api_Abstract
         return $flag;
     }
 
+    /**
+     * 获取首页数据
+     * @author 93307399@qq.com
+     */
     public function indexAction(){
+        //获取当前在进行中的抽奖活动
+
+
+
+
+
+
+
+
+
+
         $this->success('success');
     }
 

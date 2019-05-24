@@ -659,4 +659,69 @@ class Service_Member{
         }
         return $result;
     }
+
+    /**
+     * 用户积分变动
+     * @param int $uid
+     * @param int $point 积分值
+     * @param int $type 1:签到赠送,2:参与抽奖,4:后台赠送,5:后台扣除
+     * @param string $remark 操作备注
+     * @param int $editor
+     * @author 93307399@qq.com
+     * @return bool
+     */
+    public static function setPoint($uid,$point = 0,$type = 1,$remark='',$editor=0)
+    {
+        $decType = array(
+            2,5
+        );
+        if($point <= 0){
+            return false;
+        }
+        //如果是扣除积分的操作,检测是否够扣
+        if(in_array($type,$decType)){
+            if($type == 2){
+                $userInfo = self::getInfoById($uid);
+                if($userInfo['point'] < $point){
+                    unset($userInfo);
+                    return false;
+                }
+            }
+            $point = -$point;
+        }
+        /**
+         * 用户积分上限处理
+         */
+        if($point > 0){
+            $userInfo = self::getInfoById($uid);
+            if($userInfo['point'] >= 200000){
+                $point = 0;
+            }
+            if($userInfo['point'] + $point >= 200000){
+                $point = 200000 - $userInfo['point'];
+            }
+        }
+        $table = new FTable('member');
+        try{
+            $result = $table->where(array('uid'=>$uid))->increase('point',$point);
+        }catch (Exception $exception){
+            FLogger::write($exception,'exception');
+        }
+        if($result){
+            $table = new FTable('member_point');
+            $data = array(
+                'uid'         => $uid,
+                'point'       => $point,
+                'type'        => $type,
+                'remark'      => $remark,
+                'create_time' => time(),
+                'editor'      => $editor
+            );
+            $table->insert($data);
+        }
+        self::getInfoById($uid,true);
+        unset($userInfo);
+        return true;
+    }
+
 }
