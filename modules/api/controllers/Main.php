@@ -236,4 +236,8 @@ class Controller_Api_Main extends Controller_Api_Abstract
         }
         $this->output(200);
     }
+
+    public function meAction(){
+        echo '<html lang="zh"> <head><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>我的</title></head> <body><button class="auth-btn" bindtap="getUserInfo" open-type="getUserInfo"><text>授权登录</text></button></body> </html> ';
+    }
 }

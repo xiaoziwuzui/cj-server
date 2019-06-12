@@ -8,6 +8,7 @@ $_config['router'] = array(
     //支付回调配置
     '/pay/notify_(.+?).html'   => array('controller' => 'Public', 'action' => 'notify',   'params' => 'pay'),
     '/pay/return_(.+?).html'   => array('controller' => 'Public', 'action' => 'return',   'params' => 'pay'),
+    '/me.html'                 => array('controller' => 'Main',   'action' => 'me'),
     /**
      * 以下为引导非法尝试记录配置
      */
