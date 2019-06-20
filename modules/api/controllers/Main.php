@@ -99,7 +99,7 @@ class Controller_Api_Main extends Controller_Api_Abstract
         if(strlen($code) == 0){
             $this->error('code empty!');
         }
-        $w = new Service_Mini('cj');
+        $w = new Service_Mini('xhb');
         $result = $w->codeToSession($code);
         FLogger::write($result);
         if($result){

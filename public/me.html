@@ -1,0 +1,32 @@
+<html lang="zh">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>我的</title>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+</head>
+<body>
+<button id="_btn" class="auth-btn" bindtap="getUserInfo" open-type="getUserInfo">
+    <text>授权登录</text>
+</button>
+<script type="text/javascript">
+    function ready() {
+        var btn = document.getElementById('_btn');
+        btn.onclick = function (e) {
+            wx.miniProgram.postMessage({ data: 'foo' });
+            wx.miniProgram.switchTab({url: '/pages/me/index?sid=1'});
+
+            console.log('发送数据.');
+        };
+        console.log('初始化成功');
+        console.log(wx);
+    }
+    if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
+        document.addEventListener('WeixinJSBridgeReady', ready, false)
+    } else {
+        ready()
+    }
+
+</script>
+</body>
+</html>

@@ -20,4 +20,18 @@ $_config['pay'] = array(
         'notify_url' => "/pay/notify_cj.html",
         'return_url' => "/pay/return_cj.html",
     ),
+    //微信公众号配置
+    'xhb' => array(
+        'type'      => 1,
+        'platform'   => 'weixin',
+        'url'        => 'http://cj.bchhm.com/',
+        'token'      => 'cj99520',
+        'app_id'     => 'wx481fd6893c0634b1',
+        'mch_id'     => '',
+        'key'        => 'dcbc23d3a190c38bb8f48802ee72390e',
+        'app_secret' => 'dcbc23d3a190c38bb8f48802ee72390e',
+        'options'    => '',
+        'notify_url' => "/pay/notify_cj.html",
+        'return_url' => "/pay/return_cj.html",
+    ),
 );
